@@ -9,22 +9,22 @@ app.use(express.static('dist'))
 const baseUrl = '/api/persons'
 let persons = [
     { 
-      "id": 1,
+      "id": "1",
       "name": "Arto Hellas", 
       "number": "040-123456"
     },
     { 
-      "id": 2,
+      "id": "2",
       "name": "Ada Lovelace", 
       "number": "39-44-5323523"
     },
     { 
-      "id": 3,
+      "id": "3",
       "name": "Dan Abramov", 
       "number": "12-43-234345"
     },
     { 
-      "id": 4,
+      "id": "4",
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
@@ -74,14 +74,33 @@ app.post(baseUrl, (request, response) => {
   }
 
   const person = {
+    id: String(generateId()),
     name: body.name,
-    number: body.number,
-    id: generateId() ,
+    number: body.number
   }
 
   persons = persons.concat(person)
 
   response.json(person)
+})
+
+app.put('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    const body = req.body
+    const person = persons.find(person => person.id === id)
+
+    if (!person) {
+        return res.status(404).json({ error: 'Person not found' })
+    }
+
+    const updatedPerson = {
+        ...person, 
+        name: body.name,
+        number: body.number
+    }
+    persons = persons.map(person => person.id !== id ? person : updatedPerson)
+    
+    res.json(updatedPerson)
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -95,13 +114,13 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-app.delete('/api/person/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   persons = persons.filter(person => person.id !== id)
 
   response.status(204).end()
 })
-    
+
 app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
