@@ -22,6 +22,7 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
             number: newNumber
         }
         if (isAlreadyPerson(newName, newNumber)) {
+            setNotificationType('success')
             setNotificationMessage(`${newName} with number ${newNumber} is already added to phonebook.`)
             
         } else {
@@ -39,11 +40,12 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
                         .catch(err => {
                             
                             setNotificationMessage(`Information of ${personObject.name} has already been removed from server`)
-                            setNotificationType('error')
+                            setNotificationType('success')
                             // setTimeout(() => {
                             //     setNotificationMessage(null)
                             // }, 2500)
                         })
+                    setNotificationType('success')
                     setNotificationMessage(`${personObject.name} number is changed`)
                     setTimeout(() => {
                         setNotificationMessage(null)
@@ -58,13 +60,14 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
                     setPersons(persons.concat(returnedPerson))
                     setNewName('')
                     setNewNumber('')
+                    setNotificationType('success')
                     setNotificationMessage(`${personObject.name} is added.`)
                     setTimeout(() => {
                         setNotificationMessage(null)
                     }, 3000)
                 })
                 .catch(error => {
-                    console.log('Error:', error.response.data.error)
+                    setNotificationType('error')
                     setNotificationMessage(error.response.data.error)
                     setTimeout(() => {
                         setNotificationMessage(null)

@@ -25,6 +25,7 @@ const App = () => {
       personService
         .deletePerson(id).then(() => {
           setPersons(persons.filter(person => person.id !== id));
+          setNotificationType('success')
           setNotificationMessage(`${personToDelete.name}  is deleted.`)
           setTimeout(() => {
               setNotificationMessage(null)
@@ -32,7 +33,8 @@ const App = () => {
       
         })
         .catch(err => {
-          setErrorMessage()
+          setNotificationType('error')
+          setNotificationMessage(err.response.data.error)
         })
       
       
