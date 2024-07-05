@@ -64,7 +64,11 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
                     }, 3000)
                 })
                 .catch(error => {
-                    console.log(error.response.data.error)
+                    console.log('Error:', error.response.data.error)
+                    setNotificationMessage(error.response.data.error)
+                    setTimeout(() => {
+                        setNotificationMessage(null)
+                    }, 3000)
                 })
                 
             }
