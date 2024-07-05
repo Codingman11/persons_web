@@ -3,9 +3,7 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
 const Person = require('./models/person')
-const person = require('./models/person')
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
@@ -50,12 +48,12 @@ app.get(baseUrl, (request, response) => {
   })
 })
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-  return maxId + 1
-}
+// const generateId = () => {
+//   const maxId = persons.length > 0
+//     ? Math.max(...persons.map(n => n.id))
+//     : 0
+//   return maxId + 1
+// }
 
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
@@ -66,8 +64,8 @@ app.post('/api/persons', (req, res, next) => {
     })
   }
   const person = new Person({
-    "name": body.name,
-    "number": body.number
+    'name': body.name,
+    'number': body.number
   })
 
   person.save()
@@ -89,12 +87,12 @@ app.post('/api/persons', (req, res, next) => {
 
 app.put('/api/persons/:id', (req, res, next) => {
 
-  const {name, number} = req.body
+  const { name, number } = req.body
 
   Person.findByIdAndUpdate(
     req.params.id,
-    {name, number},
-    {new: true, runValidators: true, context:'query'}
+    { name, number },
+    { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedPerson => {
       res.json(updatedPerson)
@@ -156,7 +154,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
   /**part3c */
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(err => next(err))

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-if (process.argv.length<3) {
+if (process.argv.length < 3) {
   console.log('give name and number as argument')
   process.exit(1)
 }
@@ -9,7 +9,7 @@ if (process.argv.length<3) {
 
 const url = process.env.MONGODB_URL
 
-mongoose.set('strictQuery',false)
+mongoose.set('strictQuery', false)
 
 mongoose.connect(url)
 
@@ -31,9 +31,9 @@ const person = new Person({
 // })
 
 Person.find({}).then(result => {
-    console.log('phonebook:')
-    result.forEach(person => {
-      console.log(`${person.name} ${[person.number]}`)
-    })
-    mongoose.connection.close()
+  console.log('phonebook:')
+  result.forEach(person => {
+    console.log(`${person.name} ${[person.number]}`)
   })
+  mongoose.connection.close()
+})
