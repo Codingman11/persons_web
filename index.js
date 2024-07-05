@@ -57,7 +57,7 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -70,10 +70,12 @@ app.post('/api/persons', (req, res) => {
     "number": body.number
   })
 
-  person.save().then(savedPerson => {
-    console.log(`added ${savedPerson.name} phone ${savedPerson.number} to phonebook`)
-    res.json(savedPerson)
-  })
+  person.save()
+    .then(savedPerson => {
+      console.log(`added ${savedPerson.name} phone ${savedPerson.number} to phonebook`)
+      res.json(savedPerson)
+    })
+    .catch(err => next(err))
 
 
   /**Part 3a */
@@ -87,14 +89,18 @@ app.post('/api/persons', (req, res) => {
 
 app.put('/api/persons/:id', (req, res, next) => {
 
-  const body = req.body
+  const {name, number} = req.body
 
   const person = {
     name: body.name,
     number: body.number
   }
 
-  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+  Person.findByIdAndUpdate(
+    req.params.id,
+    {name, number},
+    {new: true, runValidators: true, context:'query'}
+  )
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -118,7 +124,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 
   // res.json(updatedPerson)
 
-  
+
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -168,7 +174,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }

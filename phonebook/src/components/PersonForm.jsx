@@ -58,11 +58,15 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
                     setPersons(persons.concat(returnedPerson))
                     setNewName('')
                     setNewNumber('')
-                })
-                setNotificationMessage(`${personObject.name} is added.`)
+                    setNotificationMessage(`${personObject.name} is added.`)
                     setTimeout(() => {
                         setNotificationMessage(null)
                     }, 3000)
+                })
+                .catch(error => {
+                    console.log(error.response.data.error)
+                })
+                
             }
         }
        
